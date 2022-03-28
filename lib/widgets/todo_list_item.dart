@@ -1,26 +1,28 @@
 import 'package:flutter/material.dart';
 
 class TodoListItem extends StatelessWidget {
-  const TodoListItem({Key? key}) : super(key: key);
+  const TodoListItem({Key? key, required this.title}) : super(key: key);
 
+  final String title;
   @override
   Widget build(BuildContext context) {
     return Container(
+      margin: const EdgeInsets.all(3),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(5),
-        color: const Color.fromARGB(255, 117, 115, 115),
+        color: const Color.fromARGB(255, 198, 198, 198),
       ),
       padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: const [
+        children: [
           Text(
-            '20/11/2015',
-            style: TextStyle(fontSize: 12),
+            title,
+            style: const TextStyle(fontSize: 12),
           ),
           Text(
-            'Tarefa 123',
-            style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
+            title,
+            style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
           ),
         ],
       ),

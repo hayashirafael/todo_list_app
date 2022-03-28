@@ -15,92 +15,98 @@ class _TodoListPageState extends State<TodoListPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Row(
-                children: [
-                  Expanded(
-                    child: TextField(
-                      controller: todoController,
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        labelText: 'Adicionar tarefa',
-                        hintText: 'Fazer compras',
+    return SafeArea(
+      child: Scaffold(
+        body: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(15),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: TextField(
+                        controller: todoController,
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                          labelText: 'Adicionar tarefa',
+                          hintText: 'Fazer compras',
+                        ),
                       ),
                     ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 5),
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          primary: const Color(0xff58d8b5),
+                          padding: const EdgeInsets.all(14),
+                        ),
+                        onPressed: () {
+                          String text = todoController.text;
+                          setState(() {
+                            todos.add(text);
+                          });
+                          todoController.clear();
+                        },
+                        child: const Icon(
+                          Icons.add,
+                          size: 30,
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+                const SizedBox(height: 16),
+                Flexible(
+                  child: ListView(
+                    shrinkWrap: true,
+                    children: [
+                      for (String todo in todos)
+                        TodoListItem(
+                          title: todo,
+                        ),
+                      // ListTile(
+                      //   // selected: true,
+                      //   // dense: true,
+                      //   title: const Text('Tarefa 2'),
+                      //   subtitle: const Text('26/03/2022'),
+                      //   leading: const Icon(
+                      //     Icons.add_alarm,
+                      //     size: 30,
+                      //     color: Colors.blue,
+                      //     semanticLabel: 'Save',
+                      //   ),
+                      //   onTap: () {
+                      //     print('Alarme');
+                      //   },
+                      // ),
+                    ],
                   ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 5),
-                    child: ElevatedButton(
+                ),
+                const SizedBox(height: 16),
+                Row(
+                  children: [
+                    Expanded(
+                      child:
+                          Text('Você possui ${todos.length} tarefas pendentes'),
+                    ),
+                    ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         primary: const Color(0xff58d8b5),
                         padding: const EdgeInsets.all(14),
                       ),
                       onPressed: () {
-                        String text = todoController.text;
                         setState(() {
-                          todos.add(text);
+                          todos.clear();
                         });
-                        todoController.clear();
                       },
-                      child: const Icon(
-                        Icons.add,
-                        size: 30,
-                      ),
-                    ),
-                  )
-                ],
-              ),
-              const SizedBox(height: 16),
-              Flexible(
-                child: ListView(
-                  shrinkWrap: true,
-                  children: [
-                    for (String todo in todos) const TodoListItem(),
-                    // ListTile(
-                    //   // selected: true,
-                    //   // dense: true,
-                    //   title: const Text('Tarefa 2'),
-                    //   subtitle: const Text('26/03/2022'),
-                    //   leading: const Icon(
-                    //     Icons.add_alarm,
-                    //     size: 30,
-                    //     color: Colors.blue,
-                    //     semanticLabel: 'Save',
-                    //   ),
-                    //   onTap: () {
-                    //     print('Alarme');
-                    //   },
-                    // ),
+                      child: const Text('Limpar tudo'),
+                    )
                   ],
-                ),
-              ),
-              const SizedBox(height: 16),
-              Row(
-                children: [
-                  const Expanded(
-                    child: Text('Você possui 0 tarefas pendentes'),
-                  ),
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      primary: const Color(0xff58d8b5),
-                      padding: const EdgeInsets.all(14),
-                    ),
-                    onPressed: () {
-                      setState(() {
-                        todos.clear();
-                      });
-                    },
-                    child: const Text('Limpar tudo'),
-                  )
-                ],
-              )
-            ],
+                )
+              ],
+            ),
           ),
         ),
       ),
