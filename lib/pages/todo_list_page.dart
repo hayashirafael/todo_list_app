@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:todo_list_udemy/models/todo.dart';
 import 'package:todo_list_udemy/widgets/todo_list_item.dart';
 
 class TodoListPage extends StatefulWidget {
@@ -11,7 +12,7 @@ class TodoListPage extends StatefulWidget {
 class _TodoListPageState extends State<TodoListPage> {
   final TextEditingController todoController = TextEditingController();
 
-  List<String> todos = [];
+  List<Todo> todos = [];
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +46,11 @@ class _TodoListPageState extends State<TodoListPage> {
                         onPressed: () {
                           String text = todoController.text;
                           setState(() {
-                            todos.add(text);
+                            Todo newTodo = Todo(
+                              title: text,
+                              dateTime: DateTime.now(),
+                            );
+                            todos.add(newTodo);
                           });
                           todoController.clear();
                         },
@@ -62,25 +67,7 @@ class _TodoListPageState extends State<TodoListPage> {
                   child: ListView(
                     shrinkWrap: true,
                     children: [
-                      for (String todo in todos)
-                        TodoListItem(
-                          title: todo,
-                        ),
-                      // ListTile(
-                      //   // selected: true,
-                      //   // dense: true,
-                      //   title: const Text('Tarefa 2'),
-                      //   subtitle: const Text('26/03/2022'),
-                      //   leading: const Icon(
-                      //     Icons.add_alarm,
-                      //     size: 30,
-                      //     color: Colors.blue,
-                      //     semanticLabel: 'Save',
-                      //   ),
-                      //   onTap: () {
-                      //     print('Alarme');
-                      //   },
-                      // ),
+                      for (Todo todo in todos) TodoListItem(todo: todo),
                     ],
                   ),
                 ),
