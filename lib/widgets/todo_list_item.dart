@@ -4,28 +4,36 @@ import 'package:intl/intl.dart';
 import 'package:todo_list_udemy/models/todo.dart';
 
 class TodoListItem extends StatelessWidget {
-  const TodoListItem({Key? key, required this.todo}) : super(key: key);
+  const TodoListItem({
+    Key? key,
+    required this.todo,
+    required this.onDelete,
+  }) : super(key: key);
 
   final Todo todo;
+  final Function(Todo) onDelete;
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 3),
       child: Slidable(
-        endActionPane: const ActionPane(
+        endActionPane: ActionPane(
+          extentRatio: 0.25,
           // dismissible: DismissiblePane(onDismissed: () {}),
           children: [
             // A SlidableAction can have an icon and/or a label.
             SlidableAction(
-              onPressed: null,
-              backgroundColor: Color(0xFFFE4A49),
+              onPressed: (context) {
+                onDelete(todo);
+              },
+              backgroundColor: const Color(0xFFFE4A49),
               foregroundColor: Colors.white,
               icon: Icons.delete,
               label: 'Delete',
               autoClose: true,
             ),
           ],
-          motion: ScrollMotion(),
+          motion: const ScrollMotion(),
         ),
         child: Container(
           // width: MediaQuery.of(context).size.width,
