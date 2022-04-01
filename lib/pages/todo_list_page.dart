@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:todo_list_udemy/models/todo.dart';
+import 'package:todo_list_udemy/repositories/todo_repository.dart';
 import 'package:todo_list_udemy/widgets/todo_list_item.dart';
 
 class TodoListPage extends StatefulWidget {
@@ -11,8 +12,11 @@ class TodoListPage extends StatefulWidget {
 
 class _TodoListPageState extends State<TodoListPage> {
   final TextEditingController todoController = TextEditingController();
+  final TodoRepository todoRepository = TodoRepository();
 
   List<Todo> todos = [];
+  Todo? deletedTodo;
+  int? deletedTodoPos;
 
   @override
   Widget build(BuildContext context) {
@@ -53,6 +57,7 @@ class _TodoListPageState extends State<TodoListPage> {
                             todos.add(newTodo);
                           });
                           todoController.clear();
+                          todoRepository.saveTodoList(todos);
                         },
                         child: const Icon(
                           Icons.add,
@@ -84,11 +89,7 @@ class _TodoListPageState extends State<TodoListPage> {
                         primary: const Color(0xff58d8b5),
                         padding: const EdgeInsets.all(14),
                       ),
-                      onPressed: () {
-                        setState(() {
-                          todos.clear();
-                        });
-                      },
+                      onPressed: showDeleteConfirmationDialog,
                       child: const Text('Limpar tudo'),
                     )
                   ],
@@ -102,8 +103,60 @@ class _TodoListPageState extends State<TodoListPage> {
   }
 
   void onDelete(Todo todo) {
+    deletedTodo = todo;
+    deletedTodoPos = todos.indexOf(todo);
     setState(() {
       todos.remove(todo);
     });
+    ScaffoldMessenger.of(context).clearSnackBars();
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Tarefa ${todo.title} removido com sucesso!'),
+        backgroundColor: Colors.redAccent,
+        duration: const Duration(seconds: 5),
+        action: SnackBarAction(
+          label: 'Desfazer',
+          onPressed: () {
+            setState(() {
+              todos.insert(deletedTodoPos!, deletedTodo!);
+            });
+          },
+          textColor: Colors.black,
+        ),
+      ),
+    );
+    FocusManager.instance.primaryFocus?.unfocus();
+  }
+
+  void showDeleteConfirmationDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Confirmar ação.'), //Título
+        content: const Text(
+            'Você tem certeza que deseja apagar todas as tarefas?'), //Text da ação
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop(); //Sair do modo janela.
+              FocusManager.instance.primaryFocus?.unfocus(); // Esconder teclado
+            },
+            child: const Text('Cancelar'),
+            style: TextButton.styleFrom(primary: Colors.blue),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop(); //Sair do modo janela.
+              setState(() {
+                todos.clear();
+              });
+              FocusManager.instance.primaryFocus?.unfocus();
+            },
+            child: const Text('Apagar'),
+            style: TextButton.styleFrom(primary: Colors.red),
+          ),
+        ],
+      ),
+    );
   }
 }
