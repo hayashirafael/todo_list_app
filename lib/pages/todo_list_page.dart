@@ -17,6 +17,7 @@ class _TodoListPageState extends State<TodoListPage> {
   List<Todo> todos = [];
   Todo? deletedTodo;
   int? deletedTodoPos;
+  String? errorText;
 
   @override
   void initState() {
@@ -44,10 +45,11 @@ class _TodoListPageState extends State<TodoListPage> {
                     Expanded(
                       child: TextField(
                         controller: todoController,
-                        decoration: const InputDecoration(
+                        decoration: InputDecoration(
                           border: OutlineInputBorder(),
                           labelText: 'Adicionar tarefa',
-                          hintText: 'Fazer compras',
+                          hintText: 'Ex. Fazer compras',
+                          errorText: errorText,
                         ),
                       ),
                     ),
@@ -55,17 +57,26 @@ class _TodoListPageState extends State<TodoListPage> {
                       padding: const EdgeInsets.only(left: 5),
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          primary: const Color(0xff58d8b5),
+                          primary: Colors.blue,
                           padding: const EdgeInsets.all(14),
                         ),
                         onPressed: () {
                           String text = todoController.text;
+                          if (text.isEmpty) {
+                            setState(() {
+                              errorText = 'O título não pode ser vazio!';
+                            });
+                            return;
+                          }
                           setState(() {
                             Todo newTodo = Todo(
                               title: text,
                               dateTime: DateTime.now(),
                             );
                             todos.add(newTodo);
+                            setState(() {
+                              errorText = null;
+                            });
                           });
                           todoController.clear();
                           todoRepository.saveTodoList(todos);
@@ -97,7 +108,7 @@ class _TodoListPageState extends State<TodoListPage> {
                     ),
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        primary: const Color(0xff58d8b5),
+                        primary: Colors.blue,
                         padding: const EdgeInsets.all(14),
                       ),
                       onPressed: showDeleteConfirmationDialog,
