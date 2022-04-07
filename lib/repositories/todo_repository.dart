@@ -1,9 +1,9 @@
-import 'dart:convert';
+ import 'dart:convert';
 
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:todo_list_udemy/models/todo.dart';
 
-const todoListKey = 'todoList';
+const todoListKey = 'todo_list';
 
 class TodoRepository {
   late SharedPreferences sharedPreferences;
@@ -17,6 +17,6 @@ class TodoRepository {
 
   void saveTodoList(List<Todo> todos) {
     final String jsonString = json.encode(todos);
-    sharedPreferences.setString('todo_list', jsonString);
+    sharedPreferences.setString(todoListKey, jsonString);
   }
 }
